@@ -1,35 +1,46 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
 
 function App() {
-  const [count, setCount] = useState(0)
+    const [serviceId, setServiceId] = useState('');
+    const [accessToken, setAccessToken] = useState('');
+    const [message, setMessage] = useState('');
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    const handleLogin = async () => {
+        try {
+            const response = await fetch('https://your-backend-url.up.railway.app/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ serviceId, accessToken })
+            });
+            
+            const data = await response.json();
+            setMessage(data.message || 'Login successful!');
+        } catch (error) {
+            setMessage('Login failed!');
+        }
+    };
+
+    return (
+        <div style={{ textAlign: 'center', marginTop: '50px' }}>
+            <h1>CGI Auth Login</h1>
+            <input
+                type="text"
+                placeholder="Service ID"
+                value={serviceId}
+                onChange={(e) => setServiceId(e.target.value)}
+            />
+            <br />
+            <input
+                type="text"
+                placeholder="Access Token"
+                value={accessToken}
+                onChange={(e) => setAccessToken(e.target.value)}
+            />
+            <br />
+            <button onClick={handleLogin}>Login</button>
+            <p>{message}</p>
+        </div>
+    );
 }
 
-export default App
+export default App;
